@@ -1,0 +1,40 @@
+---
+- name: "IOS >> Get current snmp Read Only communities"
+  ios_command:
+    commands: "sh running-config | i ^snmp-server community.*RO$"
+  check_mode: no
+  register: CURRENT_RO
+
+- name: "IOS >> Get current snmp Read Write communities"
+  ios_command:
+    commands: "show running-config | i ^snmp-server community.*RW$"
+  check_mode: no
+  register: CURRENT_RW
+
+- name: "DEBUG >> Current SNMP RO communites"
+  debug:
+    msg: "{{ CURRENT_RO.stdout_lines }}"
+    verbosity: 1
+
+- name: "DEBUG >> Current SNMP RW communites"
+  debug:
+    msg: "{{ CURRENT_RW.stdout_lines }}"
+    verbosity: 1
+
+- name: "IOS >> Define SNMP Communities"
+  ios_config:
+    src: "../templates/snmp.j2"
+  register: "SNMP_CONFIG"
+  changed_when: "SNMP_CONFIG.updates is defined"
+  notify: "updates exist"
+
+- name: "IOS >> Get POST play SNMP communities"
+  ios_command:
+    commands: "show running-config | i ^snmp-server community"
+  register: "POST_COMMUNITIES"
+
+- name: "DEBUG >> POST SNMP communities"
+  debug:
+    msg: "{{ POST_COMMUNITIES }}"
+    verbosity: 1
+...

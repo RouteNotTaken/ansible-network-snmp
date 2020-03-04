@@ -1,0 +1,12 @@
+! Pre play communities
+{{ CURRENT_RO.stdout[0] }}
+{{ CURRENT_RW.stdout[0] }}
+!
+! Updates:
+{% for item in SNMP_CONFIG.updates|default(['No Updates']) %}
+{{ item }}
+{% endfor %}
+!
+! Post play communities
+{{ POST_COMMUNITIES.stdout[0] }}
+!

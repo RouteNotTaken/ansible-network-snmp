@@ -1,0 +1,6 @@
+{% for command in CURRENT_RO.stdout_lines[0] %}
+{% if ro_community not in command %}
+no {{ command }}
+{% endif %}
+{% endfor %}
+snmp-server community {{ ro_community }} RO

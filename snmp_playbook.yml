@@ -1,0 +1,27 @@
+---
+- name: Update SNMP community strings on Cisco IOS devices
+  hosts: all
+  gather_facts: false
+  connection: network_cli
+
+  vars:
+    ansible_become_pass: "enable_password" 
+    log: true
+    ro_community: "ReadOnly"
+
+  tasks:
+    - name: "INCLUDE >> Log prep"
+      include_tasks: "tasks/log_setup.yml"
+      when: "log"
+    - name: "INCLUDE >> snmp"
+      include_tasks: "tasks/snmp.yml"
+    - name: "INCLUDE >> Write logs"
+      include_tasks: "tasks/log_write.yml"
+      when: "log"
+    
+  handlers:
+    - name: "LOG >> Print Updates"
+      listen: "updates exist"
+      debug:
+        msg: "{{ SNMP_CONFIG }}"
+...

@@ -1,0 +1,24 @@
+---
+- name: "BLOCK >> Write logs to disk"
+  block:
+    - name: "LOG >> Build Play Log directory"
+      file:
+        path: "{{ LOG_PATH }}"
+        state: "directory"
+      changed_when: false
+
+    - name: "LOG >> Create log file"
+      file:
+        path: "{{ LOG_PATH }}/snmp.txt"
+        state: "touch"
+      changed_when: false
+      run_once: true
+
+    - name: "LOG >> Write device updates to log file"
+      blockinfile:
+        path: "{{ LOG_PATH }}/snmp.txt"
+        block: "{{ lookup('template', 'snmp_log.j2') }}"
+        marker: "<!-- {mark} {{ inventory_hostname }} @ {{ DTG }} -->"
+  delegate_to: localhost
+  check_mode: no
+...
