@@ -1,0 +1,6 @@
+---
+- name: "LOG >> Print Updates"
+  listen: "updates exist"
+  debug:
+    msg: "{{ SNMP_CONFIG }}"
+...
